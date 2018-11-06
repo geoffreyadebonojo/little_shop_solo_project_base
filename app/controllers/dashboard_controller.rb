@@ -14,7 +14,23 @@ class DashboardController < ApplicationController
       @most_active_buyer = @merchant.top_active_user
       @biggest_order = @merchant.biggest_order
       @top_buyers = @merchant.top_buyers(3)
-      render :'merchants/show'
+
+      @past_customers = @merchant.ordering_users
+      @non_customers = @merchant.nonordering_users
+      if params[:data] == 'users'
+        respond_to do |format|
+          format.html
+          format.csv { send_data @past_customers.to_csv }
+        end
+      elsif params[:data] == 'non_users'
+        respond_to do |format|
+          format.html
+          format.csv { send_data @non_customers.to_csv }
+        end
+      else
+        render :'merchants/show'
+      end
+
     elsif current_admin?
       @top_3_shipping_states = Order.top_shipping(:state, 3)
       @top_3_shipping_cities = Order.top_shipping(:city, 3)

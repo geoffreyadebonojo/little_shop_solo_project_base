@@ -1,3 +1,5 @@
+require 'csv'
+
 class User < ApplicationRecord
   has_secure_password
 
@@ -8,6 +10,13 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
 
   enum role: %w(user merchant admin)
+
+  def self.to_csv
+    attributes = %w(email)
+    CSV.generate(headers: true) do |csv|
+      csv << attributes.map{ |attr| user.send(attr) }
+    end
+  end
 
   def merchant_orders(status=nil)
     if status.nil?
@@ -21,6 +30,16 @@ class User < ApplicationRecord
     !Order.distinct.joins(:items).where('items.user_id=? and orders.id=?', self.id, order.id).empty?
   end
 
+  def ordering_users
+    user_ids = self.merchant_orders.pluck(:user_id)
+    User.where(id: user_ids).pluck(:email)
+  end
+
+  def nonordering_users
+    user_ids = self.merchant_orders.pluck(:user_id)
+    User.where.not(id: user_ids).pluck(:email)
+  end
+
   def total_items_sold
     items
       .joins(:orders)
@@ -28,7 +47,7 @@ class User < ApplicationRecord
       .where("order_items.fulfilled=?", true)
       .sum("order_items.quantity")
   end
-  
+
   def total_inventory
     items.sum(:inventory)
   end
@@ -120,8 +139,8 @@ class User < ApplicationRecord
   end
 
   def self.merchant_by_speed(quantity, order)
-    select("distinct users.*, 
-      CASE 
+    select("distinct users.*,
+      CASE
         WHEN order_items.updated_at > order_items.created_at THEN coalesce(EXTRACT(EPOCH FROM order_items.updated_at) - EXTRACT(EPOCH FROM order_items.created_at),0)
         ELSE 1000000000 END as time_diff")
       .joins(:items)

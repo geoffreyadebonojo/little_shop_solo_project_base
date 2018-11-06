@@ -1,0 +1,9 @@
+<h2>top 10 merchants who fulfilled the most items in the past month:</h2>
+<% @top_ten_fulfilling_merchants_this_month.each_with_index do |merchant, index| %>
+  <div class="info-list" id="merchant-fulfilling-rank-<%= index %>">
+    <span>#<%= index+1 %>: <b> <%= merchant.name %> </b> </span> <br>
+    <span>sold <%= merchant.total_items_sold %> items out of <%= merchant.total_inventory %></span> <br>
+    <span>in <%= merchant.merchant_orders.count %> orders</span>
+    <span>for a total revenue of: <%= merchant.total_revenue %></span>
+  </div>
+<% end %>

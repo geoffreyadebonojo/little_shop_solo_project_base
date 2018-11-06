@@ -10,6 +10,7 @@ RSpec.describe 'Merchant Stats' do
       @user_2 = create(:user, city: 'Los Angeles', state: 'CA')
       @user_3 = create(:user, city: 'Tampa', state: 'FL')
       @user_4 = create(:user, city: 'NYC', state: 'NY')
+      @user_5 = create(:user, city: 'Nashville', state: 'TN')
 
       @item_1 = create(:item, user: @merchant_1)
 
@@ -132,6 +133,11 @@ RSpec.describe 'Merchant Stats' do
 
       expect(page).to have_content("Download CSV of customers")
       expect(page).to have_content("Download CSV of non-customers")
+
+      click_on "Download CSV of customers"
+      visit dashboard_path
+      click_on "Download CSV of non-customers"
+      # binding.pry
 
     end
   end

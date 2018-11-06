@@ -36,4 +36,38 @@
   </tbody>
 </table>
 
+<table>
+  <th>Top Selling This Month</th>
+
+  <tbody>
+    <% @top_sellers.each_with_index do |merchant, index| %>
+      <tr id="merchant-selling-rank-<%= index+1 %>">
+        <td>
+        <% if current_admin? %>
+        #<%= index+1 %>: <%= link_to merchant.name, merchant_path(merchant) %>
+        <% else %>
+
+        #<%= index+1 %>: <%= merchant.name %>
+        <% end %>
+        </td>
+      </tr>
+    <% end %>
+
+    <th>Top Fulfillers this month</th>
+    <% @top_fulfillers.each_with_index do |merchant, index| %>
+      <tr id="merchant-fulfilling-rank-<%= index+1 %>">
+        <td>
+        <% if current_admin? %>
+        #<%= index+1 %>: <%= link_to merchant.name, merchant_path(merchant) %>
+        <% else %>
+
+        #<%= index+1 %>: <%= merchant.name %>
+        <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+
+</table>
+
 <br>

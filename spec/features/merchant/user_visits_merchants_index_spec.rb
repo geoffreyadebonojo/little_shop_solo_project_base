@@ -62,7 +62,6 @@ RSpec.describe "User visits merchants index page" do
         expect(page).to have_content(merchant_3.name)
       end
 
-      save_and_open_page
     end
   end
 

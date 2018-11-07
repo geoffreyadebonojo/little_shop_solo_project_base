@@ -186,7 +186,7 @@ class User < ApplicationRecord
     merchant_by_speed(quantity, :desc)
   end
 
-  def fastest_in_my_state(state)
+  def self.fastest_to_my_state(state)
     merchants_ids= User.where('state=?', state)
     .joins(:orders)
     .joins('join order_items on orders.id=order_items.order_id')
@@ -196,7 +196,7 @@ class User < ApplicationRecord
     User.where(id: merchants_ids).fastest_merchants(5)
   end
 
-  def fastest_in_my_city(city)
+  def self.fastest_to_my_city(city)
     merchants_ids= User.where('city=?', city)
     .joins(:orders)
     .joins('join order_items on orders.id=order_items.order_id')

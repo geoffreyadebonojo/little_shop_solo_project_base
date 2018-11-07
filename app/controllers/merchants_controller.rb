@@ -7,6 +7,11 @@ class MerchantsController < ApplicationController
     end
     @top_sellers = User.top_item_selling_merch_for_month(11, 5)
     @top_fulfillers = User.top_item_selling_merch_for_month(11, 5)
+
+    if current_user
+      @fastest_to_state = User.fastest_to_my_state(current_user.state).uniq
+      @fastest_to_city = User.fastest_to_my_city(current_user.city).uniq
+    end
   end
 
   def show

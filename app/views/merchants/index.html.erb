@@ -46,7 +46,6 @@
         <% if current_admin? %>
         #<%= index+1 %>: <%= link_to merchant.name, merchant_path(merchant) %>
         <% else %>
-
         #<%= index+1 %>: <%= merchant.name %>
         <% end %>
         </td>
@@ -60,12 +59,32 @@
         <% if current_admin? %>
         #<%= index+1 %>: <%= link_to merchant.name, merchant_path(merchant) %>
         <% else %>
-
         #<%= index+1 %>: <%= merchant.name %>
         <% end %>
         </td>
       </tr>
     <% end %>
+
+    <% if current_user %>
+      <th>Fastest to <%= current_user.state %></th>
+      <% @fastest_to_state.each_with_index do |merchant, index| %>
+        <tr id="merchant-state-rank-<%= index+1 %>">
+          <td>
+            #<%= index+1 %>: <%= merchant.name %>
+          </td>
+        </tr>
+      <% end %>
+
+      <th>Fastest to <%= current_user.city %></th>
+      <% @fastest_to_city.each_with_index do |merchant, index| %>
+        <tr id="merchant-city-rank-<%= index+1 %>">
+          <td>
+            #<%= index+1 %>: <%= merchant.name %>
+          </td>
+        </tr>
+      <% end %>
+    <% end %>
+
   </tbody>
 
 </table>

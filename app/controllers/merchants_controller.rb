@@ -5,8 +5,8 @@ class MerchantsController < ApplicationController
     else
       @merchants = User.where(role: :merchant, active: true).order(:name)
     end
-    @top_sellers = User.top_item_selling_merch_for_month(11, 5)
-    @top_fulfillers = User.top_item_selling_merch_for_month(11, 5)
+    @top_sellers = User.top_sellers_this_month(Time.now.month, 5)
+    @top_fulfillers = User.top_sellers_this_month(Time.now.month, 5)
 
     if current_user
       @fastest_to_state = User.fastest_to_my_state(current_user.state).uniq

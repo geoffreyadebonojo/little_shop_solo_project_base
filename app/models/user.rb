@@ -126,27 +126,26 @@ class User < ApplicationRecord
       .limit(quantity)
   end
 
-  def self.top_item_selling_merch_for_month(month_num, quantity)
+  def self.top_sellers_this_month(month, quantity)
     select('distinct users.*, sum(order_items.quantity) as total_sold')
       .joins(:items)
       .joins('join order_items on items.id=order_items.item_id')
       .joins('join orders on orders.id=order_items.order_id')
       .where('orders.status != ?', :cancelled)
       .where('order_items.fulfilled = ?', true)
-      .where('extract(month from orders.updated_at) = ?', month_num)
+      .where('extract(month from orders.updated_at) = ?', month)
       .group('orders.id, users.id, order_items.id')
-      .order('total_sold desc, users.name')
+      .order('total_sold desc, users.name asc')
       .limit(quantity)
   end
 
-  def self.merchants_who_fulfilled_non_cancelled_orders_this_month(month_num, quantity)
+  def self.top_fulfillers_this_month(month, quantity)
       select('users.*, coalesce(count(order_items.id),0) as total_orders')
         .joins('join items on items.user_id=users.id')
         .joins('join order_items on order_items.item_id=items.id')
         .joins('join orders on orders.id=order_items.order_id')
         .where('orders.status != ?', :cancelled)
-        .where('order_items.fulfilled = ?', true)
-        .where('extract(month from orders.updated_at) = ?', month_num)
+        .where('extract(month from orders.updated_at) = ?', month)
         .group(:id)
         .order('total_orders desc, users.name asc')
         .limit(quantity)
@@ -193,7 +192,7 @@ class User < ApplicationRecord
     .joins('join items on order_items.item_id=items.id')
     .pluck('items.user_id')
 
-    User.where(id: merchants_ids).fastest_merchants(5)
+    User.where(id: merchants_ids).slowest_merchants(5)
   end
 
   def self.fastest_to_my_city(city)
@@ -203,6 +202,6 @@ class User < ApplicationRecord
     .joins('join items on order_items.item_id=items.id')
     .pluck('items.user_id')
 
-    User.where(id: merchants_ids).fastest_merchants(5)
+    User.where(id: merchants_ids).slowest_merchants(5)
   end
 end
